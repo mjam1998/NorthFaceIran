@@ -1,0 +1,356 @@
+
+:root {
+    --primary: #000000;
+    --accent: gray;
+    --text-light: #ffffff;
+    --text-gray: #cccccc;
+}
+
+
+body {
+    font-family: 'Vazirmatn', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+.navbar {
+background-color: transparent !important;
+backdrop-filter: none;
+padding: 0.5rem 0;
+transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+box-shadow: none;
+z-index: 1030;
+}
+
+/* وقتی اسکرول شد → سفید + سایه + کمی کوچیک‌تر */
+.navbar.scrolled {
+background-color: rgba(255, 255, 255, 0.95) !important;
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+padding: 0.5rem 0;
+box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* متن و آیکن‌ها وقتی نوار سفید شد → مشکی بشن */
+.navbar.scrolled .navbar-brand,
+.navbar.scrolled .nav-link,
+.navbar.scrolled .text-white {
+color: #000 !important;
+}
+
+.navbar.scrolled .nav-link:hover {
+color: var(--accent) !important;
+}
+
+/* آیکن‌های سبد خرید و جستجو هم مشکی بشن */
+.navbar.scrolled .d-flex a {
+color: #333 !important;
+}
+.navbar.scrolled  .navbar-brand img {
+filter: brightness(0) saturate(100%);
+}
+.navbar.scrolled .navbar-toggler-icon {
+background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+.navbar-brand {
+    font-weight: 900;
+    font-size: 2rem;
+    color: white !important;
+    letter-spacing: 2px;
+}
+.navbar-brand img {
+filter: brightness(0) invert(1); /* برای سفید */
+}
+.nav-link {
+    color: white !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem !important;
+    transition: all 0.3s;
+}
+.nav-link:hover {
+    color: var(--accent) !important;
+}
+.hero {
+    height: 100vh;
+    min-height: 600px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+.hero h1 {
+    font-size: 4.5rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+}
+.hero p {
+    font-size: 1.4rem;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+.btn-primary {
+    background-color: var(--accent);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    font-weight: 600;
+    border-radius: 0;
+}
+.btn-primary:hover {
+    background-color: #00a036;
+}
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 3rem;
+    position: relative;
+    display: inline-block;
+}
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+    width: 60px;
+    height: 4px;
+    background-color: var(--accent);
+}
+.product-card {
+    background: white;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: all 0.4s;
+}
+.product-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.product-img {
+    height: 350px;
+    object-fit: cover;
+}
+.price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+footer {
+
+    color: var(--text-gray);
+    padding: 4rem 0 2rem;
+}
+footer a {
+    color: black;
+    text-decoration: none;
+}
+footer a:hover {
+    color:gray;
+}
+.badge-new {
+    background-color: #e60000;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+}
+.search-input-clean {
+height: 48px;
+width: 200px;                     /* یا هر عرضی که می‌خوای */
+
+background: transparent;
+border: none;
+border-bottom: 2px solid #fff;
+border-radius: 0;
+color: white;
+font-size: 16px;
+transition: border-color 0.3s ease;
+}
+
+/* مهم‌ترین قسمت: حذف کامل هر نوع حاشیه هنگام کلیک */
+.search-input-clean:focus {
+outline: none !important;
+box-shadow: none !important;
+border: none !important;
+border-bottom: 2px solid #ff6b00 !important;  /* فقط خط زیرین عوض بشه */
+background: transparent !important;
+}
+/* وقتی اسکرول شد → خط زیرین جستجو مشکی بشه + متن مشکی */
+.navbar.scrolled .search-input-clean {
+border-bottom-color: #000 !important;
+color: #000 !important;
+}
+
+.navbar.scrolled .search-input-clean::placeholder {
+color: #666 !important;
+opacity: 1;
+}
+
+.navbar.scrolled .search-input-clean:focus {
+border-bottom-color: var(--accent) !important;   /* سبز برندت */
+}
+
+/* آیکن ذره‌بین هم مشکی بشه */
+.navbar.scrolled .bi-search {
+color: #333 !important;
+}
+/* مخفی کردن اسکرول‌بار ولی قابل اسکرول بودن */
+.d-flex[style*="overflow-x"]::-webkit-scrollbar {
+display: none;
+}
+
+/* اسکرول نرم و اسنپ عالی در موبایل و دسکتاپ */
+.d-flex.gap-4 {
+scroll-behavior: smooth;
+padding-bottom: 10px;
+}
+
+/* وقتی موس روی اسلایدر میره، اسکرول‌بار کروم نشون بده (اختیاری ولی قشنگ) */
+.d-flex.gap-4:hover {
+scrollbar-width: thin;
+}
+.d-flex.gap-4:hover::-webkit-scrollbar {
+display: block;
+height: 6px;
+}
+.d-flex.gap-4:hover::-webkit-scrollbar-thumb {
+background: var(--accent);
+border-radius: 10px;
+}
+/* اسکرول افقی فقط داخل بخش محصولات */
+.overflow-x-auto {
+overflow-x: auto;
+overflow-y: hidden;
+-webkit-overflow-scrolling: touch;
+scroll-behavior: smooth;
+}
+
+/* عرض کارت‌ها جمع بشه ولی محتوا بیشتر از صفحه باشه */
+.overflow-x-auto > .d-flex {
+min-width: max-content;
+}
+
+/* === موبایل و تبلت: اسکرول‌بار کاملاً مخفی === */
+@media (max-width: 991.98px) {
+.overflow-x-auto::-webkit-scrollbar {
+display: none;
+}
+.overflow-x-auto {
+-ms-overflow-style: none;
+scrollbar-width: none;
+}
+}
+
+/* === دسکتاپ: اسکرول‌بار شیک و قابل دیدن === */
+@media (min-width: 992px) {
+.overflow-x-auto::-webkit-scrollbar {
+height: 10px;
+}
+.overflow-x-auto::-webkit-scrollbar-track {
+background: #f1f1f1;
+border-radius: 10px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+background: var(--accent);           /* رنگ خاکستری برندت */
+border-radius: 10px;
+transition: all 0.3s;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+background: #555;
+}
+.overflow-x-auto:hover::-webkit-scrollbar-thumb {
+background: #444;
+}
+}
+/* استایل بنرها */
+.banner-full {
+height: 280px;
+transition: transform 0.4s;
+}
+.banner-full:hover {
+transform: scale(1.02);
+}
+
+.banner-half {
+height: 220px;
+transition: transform 0.4s;
+}
+.banner-half:hover {
+transform: scale(1.03);
+}
+
+/* در موبایل ارتفاع بنرها کمتر بشه تا جا بشه */
+@media (max-width: 768px) {
+.banner-full {
+height: 200px;
+}
+.banner-half {
+height: 180px;
+}
+.banner-full h3 {
+font-size: 1.5rem !important;
+}
+.banner-full p {
+font-size: 1rem;
+}
+}
+/* استایل کارت مقالات */
+.article-card {
+transition: all 0.4s ease;
+border: none !important;
+}
+.article-card:hover {
+transform: translateY(-12px);
+box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+.article-card img {
+transition: transform 0.6s;
+}
+.article-card:hover img {
+transform: scale(1.08);
+}
+.article-card .btn {
+font-weight: 500;
+}
+
+
+/* نوار همیشه سفید در صفحات داخلی (لاگین، ثبت‌نام، سبد خرید و ...) */
+.navbar.force-white {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    padding: 0.5rem 0;
+}
+
+.navbar.force-white .navbar-brand,
+.navbar.force-white .nav-link,
+.navbar.force-white .text-white,
+.navbar.force-white .bi-search,
+.navbar.force-white .bi-bag,
+.navbar.force-white a {
+    color: #000 !important;
+}
+
+.navbar.force-white .nav-link:hover {
+    color: var(--accent) !important;
+}
+
+.navbar.force-white .navbar-brand img {
+    filter: brightness(0) saturate(100%);
+}
+
+.navbar.force-white .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 0, 0, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navbar.force-white .search-input-clean {
+    border-bottom-color: #000 !important;
+    color: #000 !important;
+}
+
+.navbar.force-white .search-input-clean::placeholder {
+    color: #666 !important;
+}
+
+.navbar.force-white .search-input-clean:focus {
+    border-bottom-color: #00a036 !important;
+}
