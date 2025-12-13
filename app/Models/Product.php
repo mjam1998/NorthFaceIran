@@ -10,7 +10,7 @@ class Product extends Model
         'name',
         'category_id',
         'slug',
-        'count',
+
         'price',
         'discount',
         'description',
@@ -42,5 +42,9 @@ class Product extends Model
     public function product_comments()
     {
         return $this->hasMany(ProductComment::class);
+    }
+    public function variants()
+    {
+        return $this->hasMany(ProductVariant::class);
     }
 }

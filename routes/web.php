@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',[HomeController::class,'index'])->name('home.index');
@@ -24,6 +25,10 @@ Route::get('/index',[AdminController::class,'index'])->name('admin.index');
     Route::get('/category/list',[CategoryController::class,'categoryList'])->name('admin.category.list');
     Route::post('/category/store',[CategoryController::class,'store'])->name('admin.category.store');
     Route::put('/category/edit/{id}', [CategoryController::class, 'edit'])->name('admin.category.edit');
+
+    Route::get('/product',[ProductController::class,'index'])->name('admin.product.index');
+    Route::post('/product/store',[ProductController::class,'store'])->name('admin.product.store');
+    Route::put('/product/edit/{id}', [ProductController::class, 'edit'])->name('admin.product.edit');
 
     Route::post('logout',[AdminController::class,'logout'])->name('logout');
 });

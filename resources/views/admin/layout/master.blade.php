@@ -89,6 +89,12 @@
                 <span>   دسته بندی محصولات</span>
             </a>
         </li>
+        <li class="menu-item">
+            <a href="{{route('admin.product.index')}}"  >
+                <i class="bi bi-basket"></i>
+                <span>    محصولات</span>
+            </a>
+        </li>
 
 
 
@@ -129,6 +135,7 @@
 </div>
 <script src="{{asset('admin/js/persian-date.min.js')}}"></script>
 <script src="{{asset('admin/js/persian-datepicker.min.js')}}"></script>
+
 <script>
     $(document).ready(function() {
         $('#datatable').DataTable({

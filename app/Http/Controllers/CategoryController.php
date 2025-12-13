@@ -19,7 +19,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'slug' => [
                 'required',
-                'regex:/^[a-z]+$/',
+                'regex:/^[a-z-]+$/',
                 'unique:categories,slug',
             ],
             'photo' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
@@ -71,7 +71,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'slug' => [
                 'required',
-                'regex:/^[a-z]+$/',
+                'regex:/^[a-z-]+$/',
                 'unique:categories,slug,' . $id
             ],
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
