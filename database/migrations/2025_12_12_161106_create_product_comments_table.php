@@ -16,9 +16,10 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->string('name');
             $table->text('comment');
-            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->text('admin_response')->nullable();
             $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
+            $table->tinyInteger('status')->default(2);//1 فعال 2 در انتظار تایید 3 غیرفعال
         });
     }
 

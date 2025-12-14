@@ -10,7 +10,8 @@ class ProductComment extends Model
         'product_id',
         'name',
         'comment',
-        'parent_id',
+        'admin_response',
+        'status',
     ];
 
     public function product(){

@@ -4,7 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductColor;
+use App\Models\ProductComment;
+use App\Models\ProductPhoto;
+use App\Models\ProductSize;
+use App\Models\ProductVariant;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
 {
@@ -149,5 +157,285 @@ class ProductController extends Controller
         $data['discount'] = $request->filled('discount') ? $request->input('discount') : null;
         $product->update($data);
         return redirect()->back()->with('productMessage','محصول با موفقیت ویرایش شد.');
+    }
+    public function indexColor(Product $product): JsonResponse
+    {
+        $colors = $product->colors()->select('id', 'name', 'code')->get();
+
+        return response()->json($colors);
+    }
+
+    /**
+     * ذخیره رنگ جدید
+     */
+    public function storeColor(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'name'       => 'required|string|max:50',
+            'code'       => 'required|regex:/^#[0-9A-F]{6}$/i',
+        ]);
+
+        // جلوگیری از تکراری بودن رنگ برای همان محصول
+        $exists = ProductColor::query()->where('product_id', $request->product_id)
+            ->where('code', strtoupper($request->code))
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'این رنگ قبلاً برای محصول اضافه شده است.'
+            ], 422);
+        }
+
+        $color = ProductColor::query()->create([
+            'product_id' => $request->product_id,
+            'name'       => $request->name,
+            'code'       => strtoupper($request->code),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'رنگ با موفقیت اضافه شد.',
+            'color'   => $color
+        ]);
+    }
+
+    /**
+     * حذف رنگ
+     */
+    public function destroyColor(ProductColor $color): JsonResponse
+    {
+        // اطمینان از اینکه رنگ متعلق به محصول درست است (امنیت اضافی)
+        $color->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'رنگ با موفقیت حذف شد.'
+        ]);
+    }
+    public function indexSize(Product $product): JsonResponse
+    {
+        $sizes = $product->sizes()->select('id', 'name')->orderBy('id')->get();
+        return response()->json($sizes);
+    }
+
+// ذخیره سایز جدید
+    public function storeSize(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'name'       => 'required|string|max:50',
+        ]);
+
+        // جلوگیری از تکراری بودن سایز برای همان محصول
+        $exists = ProductSize::query()->where('product_id', $request->product_id)
+            ->where('name', $request->name)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'این سایز قبلاً برای محصول اضافه شده است.'
+            ], 422);
+        }
+
+        $size = ProductSize::query()->create([
+            'product_id' => $request->product_id,
+            'name'       => $request->name,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'سایز با موفقیت اضافه شد.',
+            'size'    => $size
+        ]);
+    }
+
+// حذف سایز
+    public function destroySize(ProductSize $size): JsonResponse
+    {
+        $size->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'سایز با موفقیت حذف شد.'
+        ]);
+    }
+    public function indexPhoto(Product $product): JsonResponse
+    {
+        $photos = $product->photos()->select('id', 'photo', 'photo_alt')->orderBy('id')->get();
+        return response()->json($photos);
+    }
+
+// ذخیره عکس جدید در public/product
+    public function storePhoto(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'slug'       => 'required|string',
+            'photo'      => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'photo_alt'  => 'required|string',
+        ]);
+
+        $productId = $request->product_id;
+        $slug = $request->slug;
+
+        // ساخت نام فایل: slug-1.jpg, slug-2.jpg و ...
+        $existingPhotos = ProductPhoto::query()->where('product_id', $productId)->count();
+        $newIndex = $existingPhotos + 1;
+
+        $extension = $request->photo->getClientOriginalExtension();
+        $photoName = $slug . '-' . $newIndex . '.' . $extension;
+
+        // ذخیره مستقیم در public/product
+        $request->photo->storeAs('product', $photoName, 'public');
+
+        $photo = ProductPhoto::query()->create([
+            'product_id' => $productId,
+            'photo'      => $photoName,
+            'photo_alt'  => $request->photo_alt,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'عکس با موفقیت آپلود شد.',
+            'photo'   => $photo
+        ]);
+    }
+
+// حذف عکس (از دیتابیس + فایل فیزیکی)
+    public function destroyPhoto(ProductPhoto $photo): JsonResponse
+    {
+        // حذف فایل از public/product
+        $filePath = public_path('product/' . $photo->photo);
+        if (File::exists($filePath)) {
+            File::delete($filePath);
+        }
+
+        // حذف رکورد از دیتابیس
+        $photo->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'عکس با موفقیت حذف شد.'
+        ]);
+    }
+    // لیست تمام variants محصول
+    public function indexVariant(Product $product): JsonResponse
+    {
+
+        $variants = $product->variants()
+            ->with(['color:id,name,code', 'size:id,name'])
+            ->get();
+
+        return response()->json($variants);
+    }
+// ذخیره یا افزایش موجودی (اگر ترکیب وجود داشته باشه، count رو جمع می‌کنه)
+    public function storeVariant(Request $request): JsonResponse
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'color_id'   => 'required|exists:product_colors,id',
+            'size_id'    => 'required|exists:product_sizes,id',
+            'count'      => 'required|integer|min:0',
+        ]);
+
+        $variant = ProductVariant::updateOrCreate(
+            [
+                'product_id' => $request->product_id,
+                'color_id'   => $request->color_id,
+                'size_id'    => $request->size_id,
+            ],
+            [
+                'count' => DB::raw('count + ' . $request->count)
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'موجودی با موفقیت افزوده شد.',
+            'variant' => $variant->load(['color', 'size'])
+        ]);
+    }
+
+// به‌روزرسانی مستقیم موجودی
+    public function updateVariant(Request $request, ProductVariant $variant): JsonResponse
+    {
+        $request->validate([
+            'count' => 'required|integer|min:0'
+        ]);
+
+        $variant->update(['count' => $request->count]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'موجودی به‌روزرسانی شد.'
+        ]);
+    }
+    public function indexComment(Product $product): JsonResponse
+    {
+        $comments = $product->product_comments()->orderBy('created_at', 'desc')->get();
+        return response()->json($comments);
+    }
+
+// افزودن کامنت
+    public function storeComment(Request $request)
+    {
+
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'name' => 'required|string|max:100',
+            'comment' => 'required|string',
+            'admin_response' => 'nullable|string',
+            'status' => 'required|in:1,2,3'
+        ]);
+
+        ProductComment::create($request->all());
+
+        return redirect()->back()->with('message', 'عملیات با موفقیت انجام شد.');
+    }
+
+// ویرایش پاسخ ادمین
+    public function updateResponse(Request $request, Product $product, ProductComment $comment)
+    {
+        if ($comment->product_id !== $product->id) abort(403);
+
+        $request->validate(['admin_response' => 'nullable|string']);
+        $comment->update(['admin_response' => $request->admin_response]);
+
+        return redirect()->back()->with('message', 'پاسخ ادمین ذخیره شد.');
+    }
+
+    public function destroyComment(Product $product, ProductComment $comment)
+    {
+        if ($comment->product_id !== $product->id) abort(403);
+
+        $comment->delete();
+
+        return redirect()->back()->with('message', 'کامنت حذف شد.');
+    }
+
+// تغییر وضعیت
+    public function updateStatus(Request $request, Product $product, ProductComment $comment)
+    {
+        // چون کامنت متعلق به محصول هست، می‌تونی چک کنی (امنیت)
+        if ($comment->product_id !== $product->id) {
+            abort(403);
+        }
+
+        $request->validate(['status' => 'required|in:1,2']);
+
+        $comment->update(['status' => $request->status]);
+
+        return redirect()->back()->with('message', 'وضعیت کامنت با موفقیت تغییر کرد.');
+    }
+
+
+
+    public function comments(Product $product)
+    {
+        $comments = $product->product_comments()->orderBy('created_at', 'desc')->paginate(15);
+        return view('admin.product.comments', compact('product', 'comments'));
     }
 }

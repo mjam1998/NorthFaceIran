@@ -24,17 +24,17 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function product_photos()
+    public function photos()
     {
         return $this->hasMany(ProductPhoto::class);
     }
 
-    public function product_sizes()
+    public function sizes()
     {
         return $this->hasMany(ProductSize::class);
     }
 
-    public function product_colores()
+    public function colors()
     {
         return $this->hasMany(ProductColor::class);
     }
