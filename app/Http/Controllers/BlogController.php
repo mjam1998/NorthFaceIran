@@ -2,43 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Blog;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class BlogController extends Controller
 {
-    public function categoryList()
+    public function index()
     {
-         $categories=Category::all();
-        return view('admin.category.list',compact('categories'));
+        $blogs=Blog::all();
+        return view('admin.blog.index',compact('blogs'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'slug' => [
                 'required',
                 'regex:/^[a-z0-9-]+$/',
-                'unique:categories,slug',
+                'unique:blogs,slug',
             ],
             'photo' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
             'photo_alt'=>'required|string',
             'meta_description'=>'required|string',
             'page_title'=>'required|string',
+            'description'=>'required|string',
         ], [
-            'slug.regex'   => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) و عدد باشد.  خط تیره، فاصله یا کاراکتر خاص مجاز نیست.',
+            'slug.regex'   => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) باشد. عدد، خط تیره، فاصله یا کاراکتر خاص مجاز نیست.',
             'slug.unique'  => 'این اسلاگ قبلاً استفاده شده است.',
             'slug.required'=> 'وارد کردن اسلاگ الزامی است.',
-            'name.required'=>'وارد کردن نام الزامی است.',
-            'name.max'               => 'نام دسته‌بندی نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
+            'title.required'=>'وارد کردن عنوان مقاله الزامی است.',
+            'title.max'               => 'نام دسته‌بندی نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
             'photo.required'         => 'انتخاب عکس برای دسته‌بندی الزامی است.',
             'photo.image'            => 'فایل انتخاب‌شده باید تصویر باشد.',
             'photo.mimes'            => 'فرمت عکس فقط jpeg، jpg، png یا webp مجاز است.',
             'photo.max'              => 'حجم عکس نباید بیشتر از ۲ مگابایت باشد.',
 
             'photo_alt.required'     => 'وارد کردن  (Alt) الزامی است.',
-
+            'description.required' =>'وارد کردن متن مقاله الزامی است.',
 
             'meta_description.required' => 'وارد کردن توضیحات متا (Meta Description) الزامی است.',
 
@@ -49,48 +50,50 @@ class CategoryController extends Controller
 
         $photoExtension = $request->photo->getClientOriginalExtension();
         $photoName = $request->slug .'.' . $photoExtension;
-        $request->photo->storeAs('category', $photoName, 'public');
+        $request->photo->storeAs('blog', $photoName, 'public');
 
-        Category::create([
-           'name'=>$request['name'],
-           'slug'=>$request['slug'],
-           'photo'=>$photoName,
-           'photo_alt'=>$request['photo_alt'],
-           'meta_description'=>$request['meta_description'],
-           'page_title'=>$request['page_title'],
+        Blog::query()->create([
+            'title'=>$request['title'],
+            'slug'=>$request['slug'],
+            'photo'=>$photoName,
+            'photo_alt'=>$request['photo_alt'],
+            'meta_description'=>$request['meta_description'],
+            'page_title'=>$request['page_title'],
+            'description'=>$request['description']
         ]);
 
-        return redirect()->back()->with('categoryAdded','دسته بندی با موفقیت افزوده شد.');
+        return redirect()->back()->with('blogMessage','مقاله با موفقیت افزوده شد.');
     }
 
     public function edit(Request $request, $id)
     {
-        $category = Category::findOrFail($id);
+        $blog = Blog::query()->findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'slug' => [
                 'required',
                 'regex:/^[a-z0-9-]+$/',
-                'unique:categories,slug,' . $id
+                'unique:blogs,slug,' . $id
             ],
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'photo_alt'=>'required|string',
             'meta_description'=>'required|string',
             'page_title'=>'required|string',
+            'description'=>'required|string',
         ], [
-            'slug.regex'   => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) و عدد باشد.  خط تیره، فاصله یا کاراکتر خاص مجاز نیست.',
+            'slug.regex'   => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) باشد. عدد، خط تیره، فاصله یا کاراکتر خاص مجاز نیست.',
             'slug.unique'  => 'این اسلاگ قبلاً استفاده شده است.',
             'slug.required'=> 'وارد کردن اسلاگ الزامی است.',
-            'name.required'=>'وارد کردن نام الزامی است.',
-            'name.max'               => 'نام دسته‌بندی نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
+            'title.required'=>'وارد کردن نام الزامی است.',
+            'title.max'               => 'نام دسته‌بندی نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
 
             'photo.image'            => 'فایل انتخاب‌شده باید تصویر باشد.',
             'photo.mimes'            => 'فرمت عکس فقط jpeg، jpg، png یا webp مجاز است.',
             'photo.max'              => 'حجم عکس نباید بیشتر از ۲ مگابایت باشد.',
 
             'photo_alt.required'     => 'وارد کردن  (Alt) الزامی است.',
-
+            'description.required' =>'وارد کردن متن مقاله الزامی است.',
 
             'meta_description.required' => 'وارد کردن توضیحات متا (Meta Description) الزامی است.',
 
@@ -103,18 +106,18 @@ class CategoryController extends Controller
 
         if ($request->hasFile('photo')) {
             // حذف عکس قبلی
-            if ($category->photo && file_exists(public_path('category/' . $category->photo))) {
-                unlink(public_path('category/' . $category->photo));
+            if ($blog->photo && file_exists(public_path('blog/' . $blog->photo))) {
+                unlink(public_path('blog/' . $blog->photo));
             }
             $photoExtension = $request->photo->getClientOriginalExtension();
             $photoName = $request->slug .'.' . $photoExtension;
-            $request->photo->storeAs('category', $photoName, 'public');
+            $request->photo->storeAs('blog', $photoName, 'public');
             $data['photo'] = $photoName;
         }
 
-        $category->update($data);
+        $blog->update($data);
 
-        return redirect()->route('admin.category.list')
-            ->with('categoryAdded', 'دسته‌بندی با موفقیت ویرایش شد.');
+        return redirect()->route('admin.blog.index')
+            ->with('blogMessage', 'مقاله با موفقیت ویرایش شد.');
     }
 }

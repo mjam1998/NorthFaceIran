@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
@@ -48,6 +49,10 @@ Route::get('/index',[AdminController::class,'index'])->name('admin.index');
         Route::put('/comment/{comment}/status', [ProductController::class, 'updateStatus'])->name('admin.product.comment.status');
         Route::delete('/comment/{comment}', [ProductController::class, 'destroyComment'])->name('admin.product.comment.destroy');
     });
+
+    Route::get('/blog/index',[BlogController::class,'index'])->name('admin.blog.index');
+    Route::post('/blog/store',[BlogController::class,'store'])->name('admin.blog.store');
+    Route::put('/blog/edit/{id}', [BlogController::class, 'edit'])->name('admin.blog.edit');
 
     Route::post('logout',[AdminController::class,'logout'])->name('logout');
 });

@@ -96,6 +96,12 @@
                 <span>    محصولات</span>
             </a>
         </li>
+        <li class="menu-item">
+            <a href="{{route('admin.blog.index')}}"  >
+                <i class="bi bi-file-earmark-font"></i>
+                <span>    مقالات</span>
+            </a>
+        </li>
 
 
 

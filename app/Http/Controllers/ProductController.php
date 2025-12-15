@@ -29,7 +29,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'slug' => [
                 'required',
-                'regex:/^[a-z-]+$/',
+                'regex:/^[a-z0-9-]+$/',
                 'unique:products,slug',
             ],
 
@@ -48,7 +48,7 @@ class ProductController extends Controller
             'name.max' => 'نام محصول نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
 
             'slug.required' => 'وارد کردن اسلاگ الزامی است.',
-            'slug.regex' => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) باشد. عدد، خط تیره، فاصله یا کاراکتر خاص مجاز نیست.',
+            'slug.regex' => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) و عدد باشد. فاصله یا کاراکتر خاص مجاز نیست.',
             'slug.unique' => 'این اسلاگ قبلاً استفاده شده است.',
 
 
@@ -97,7 +97,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'slug' => [
                 'required',
-                'regex:/^[a-z-]+$/',
+                'regex:/^[a-z0-9-]+$/',
                 'unique:products,slug,' . $id,
             ],
 
@@ -117,7 +117,7 @@ class ProductController extends Controller
             'name.max' => 'نام محصول نمی‌تواند بیشتر از ۲۵۵ کاراکتر باشد.',
 
             'slug.required' => 'وارد کردن اسلاگ الزامی است.',
-            'slug.regex' => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z) باشد. عدد، خط under line، فاصله یا کاراکتر خاص مجاز نیست.',
+            'slug.regex' => 'اسلاگ فقط می‌تواند حروف انگلیسی کوچک (a-z)و عدد باشد.  خط under line، فاصله یا کاراکتر خاص مجاز نیست.',
             'slug.unique' => 'این اسلاگ قبلاً استفاده شده است.',
 
 
