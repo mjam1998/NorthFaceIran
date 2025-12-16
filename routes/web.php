@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
@@ -53,6 +54,10 @@ Route::get('/index',[AdminController::class,'index'])->name('admin.index');
     Route::get('/blog/index',[BlogController::class,'index'])->name('admin.blog.index');
     Route::post('/blog/store',[BlogController::class,'store'])->name('admin.blog.store');
     Route::put('/blog/edit/{id}', [BlogController::class, 'edit'])->name('admin.blog.edit');
+
+    Route::get('/banner', [BannerController::class, 'index'])->name('admin.banner.index');
+    Route::post('/banner/video', [BannerController::class, 'updateVideo'])->name('admin.banner.video.update');
+    Route::post('/banner/photo/{photoBanner}', [BannerController::class, 'updatePhoto'])->name('admin.banner.photo.update');
 
     Route::post('logout',[AdminController::class,'logout'])->name('logout');
 });

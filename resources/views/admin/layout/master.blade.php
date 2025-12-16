@@ -102,6 +102,12 @@
                 <span>    مقالات</span>
             </a>
         </li>
+        <li class="menu-item">
+            <a href="{{route('admin.banner.index')}}"  >
+                <i class="bi bi-card-image"></i>
+                <span>    ویدیو و بنر صفحه اصلی</span>
+            </a>
+        </li>
 
 
 
