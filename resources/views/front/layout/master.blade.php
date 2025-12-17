@@ -4,7 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Northface-Iran</title>
+    <!-- Title با پیش‌فرض -->
+    <title>@yield('page_title', 'Northface Iran - تجهیزات حرفه‌ای کوهنوردی و طبیعت‌گردی نورث فیس')</title>
+
+    <!-- Meta Description با پیش‌فرض -->
+    <meta name="description" content="@yield('meta_description', 'فروشگاه رسمی نورث فیس ایران | کاپشن، کفش کوهنوردی، کوله‌پشتی و تجهیزات کمپینگ اورجینال با ضمانت اصالت و ارسال رایگان')">
+
+    <!-- سایر متا تگ‌های پایه برای SEO بهتر -->
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="نورث فیس, کاپشن نورث فیس, کفش کوهنوردی, کوله پشتی, تجهیزات کوهنوردی, northface iran">
+
+    <!-- Open Graph پایه (برای اشتراک در شبکه‌های اجتماعی) -->
+    <meta property="og:title" content="@yield('page_title', 'Northface Iran')">
+    <meta property="og:description" content="@yield('meta_description', 'تجهیزات حرفه‌ای کوهنوردی و طبیعت‌گردی نورث فیس')">
+    <meta property="og:image" content="{{ asset('front/assets/default.svg') }}">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:type" content="website">
+
 
     <!-- Bootstrap 5 RTL -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
@@ -26,7 +42,7 @@
     <div class="container">
         <!-- لوگو -->
         <a class="navbar-brand" href="#">
-            <img src="{{asset('front/assets/default.svg')}}" style="height: 80px; width: 80px;" alt="لوگو">
+            <img src="{{asset('front/assets/default.svg')}}" style="height: 60px; width: 60px;" alt="لوگو">
         </a>
 
         <!-- دکمه همبرگری + آیکون‌های موبایل (همیشه در موبایل نمایش داده میشه) -->
