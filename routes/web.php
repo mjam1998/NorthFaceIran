@@ -11,6 +11,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/',[HomeController::class,'index'])->name('home.index');
 Route::get('/login',[HomeController::class,'login'])->name('login');
 Route::post('login/post',[HomeController::class,'loginPost'])->name('login.post');
+Route::get('/category/{slug}', [HomeController::class, 'showCategory'])->name('front.category.show');
+Route::get('/product/{slug}', [HomeController::class, 'showProduct'])->name('front.product.show');
+Route::post('/product/check-stock', [HomeController::class, 'checkStock'])->name('product.check-stock');
+Route::post('/product/{product}/comment', [HomeController::class, 'storeComment'])
+    ->name('front.product.comment.store')
+    ->middleware('throttle:6,480');
+Route::post('/cart/add', [HomeController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart/dropdown', [HomeController::class, 'cartDropdown'])->name('cart.dropdown');
+Route::get('/blogs', [HomeController::class, 'showArticles'])->name('front.articles.show');
+Route::get('/blog/{slug}', [HomeController::class, 'showBlog'])->name('front.article.show');
+Route::get('/search', [HomeController::class, 'search'])->name('front.search');
 
 Route::prefix('/admin')->middleware('auth')->group(function(){
 Route::get('/index',[AdminController::class,'index'])->name('admin.index');

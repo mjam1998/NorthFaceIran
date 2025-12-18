@@ -46,47 +46,52 @@
 
             <!-- فقط این div اسکرول افقی داره، نه کل صفحه -->
             <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
-                <div class="d-flex gap-4 pb-3" style="min-width: max-content;">
-                  @foreach($products as $product)
-                        <div class="flex-shrink-0" style="width: 280px;">
-                            <div class="product-card h-100 position-relative shadow-sm">
-
-                                <a href="#" >
-                                    <img src="{{asset('product/'.$product->photos->first()->photo) }}" class="w-100" alt="{{$product->photos->first()->photo_alt}}">
+                <div class="row g-4">
+                    @foreach($products as $product)
+                        <div class="col-lg-3 col-md-4 col-6">
+                            <div class="product-card h-100 shadow-sm bg-white rounded-3 overflow-hidden">
+                                <a href="{{ route('front.product.show', $product->slug)  }}">
+                                    <img src="{{ asset('product/' . $product->photos->first()->photo ?? 'placeholder.jpg') }}"
+                                         class="w-100" style="height: 250px; object-fit: cover;"
+                                         alt="{{ $product->photos->first()->photo_alt  }}">
                                 </a>
-                                <div class="p-4">
-                                   <a href="#" style="text-decoration: none;color: black;">
-                                       <h5 class="mb-2">{{$product->name}}</h5>
-                                   </a>
-                                    {{--<p class="text-muted small mb-3">ضدآب، تنفس‌پذیر، سبک</p>--}}
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        @if($product->discount > 0)
-                                            <!-- قیمت اصلی (خط‌خورده) -->
-                                            <span class="price old-price text-muted text-decoration-line-through small">
-                                                {{ number_format($product->price) }} تومان
-                                            </span>
 
-                                            <!-- قیمت با تخفیف (قرمز و bold) -->
-                                            <div class="price discounted-price text-danger fw-bold fs-5">
-                                                {{ number_format($product->price - $product->discount) }} تومان
-                                            </div>
-                                        @else
-                                            <!-- اگر تخفیف ندارد، فقط قیمت اصلی -->
-                                            <span class="price fw-bold fs-5">
-                                                  {{ number_format($product->price) }} تومان
-                                            </span>
-                                        @endif
-                                        <a href="#" class="btn btn-outline-success btn-sm">افزودن</a>
+                                <div class="p-3">
+                                    <a href="{{ route('front.product.show', $product->slug)  }}" class="text-dark text-decoration-none">
+                                        <h6 class="fw-bold mb-2">{{ Str::limit($product->name, 50) }}</h6>
+
+                                    </a>
+                                    <a href="{{route('front.category.show', $product->category->slug)}}" style="text-decoration: none;">
+                                        <p style="color: grey; ">{{$product->category->name}}</p>
+                                    </a>
+
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div>
+                                            @if($product->discount > 0)
+                                                <div>
+                                                <span class="text-muted text-decoration-line-through small">
+                                                    {{ number_format($product->price) }} تومان
+                                                </span>
+                                                </div>
+                                                <div class="text-danger fw-bold fs-5">
+                                                    {{ number_format($product->price - $product->discount) }} تومان
+                                                </div>
+                                            @else
+                                                <div class="fw-bold fs-5">
+                                                    {{ number_format($product->price) }} تومان
+                                                </div>
+                                            @endif
+                                        </div>
+
+                                        <a href="{{ route('front.product.show', $product->slug)  }}" class="btn btn-success btn-sm rounded-pill px-3 add-to-cart"
+                                           data-product-id="{{ $product->id }}">
+                                            <i class="bi bi-bag-plus"></i> افزودن
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                  @endforeach
-
-
-
-
-
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -98,10 +103,11 @@
         <div class="container px-4">
 
             <!-- بنر بزرگ تمام‌عرض -->
+            <a href="{{$bannerPrimary->link}}">
             <div class="banner-full mb-4 rounded-4 overflow-hidden position-relative text-white shadow-lg">
-               <a href="{{$bannerPrimary->link}}">
+
                    <img src="{{asset('banner/'.$bannerPrimary->photo)}}" alt="{{$bannerPrimary->photo_alt}}" class="w-100 h-100 object-fit-cover">
-               </a>
+
                 <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center p-4"
                      style="background: rgba(0,0,0,0.45);">
                     <div>
@@ -110,37 +116,41 @@
                     </div>
                 </div>
             </div>
-
+            </a>
             <!-- دو بنر کنار هم (در دسکتاپ) -->
-            <div class="row g-4 " style="margin-top: 50px;">
+            <div class="row g-4" style="margin-top: 50px;">
+                <!-- بنر راست -->
                 <div class="col-lg-6">
-                    <div class="banner-half rounded-4 overflow-hidden position-relative text-white shadow-lg h-100">
-                       <a href="{{$bannerRight->link}}">
-                           <img src="{{asset('banner/'.$bannerRight->photo)}}" alt="{{$bannerRight->photo_alt}}" class="w-100 h-100 object-fit-cover">
-                       </a>
-                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center p-4"
-                             style="background: rgba(0,0,0,0.5);">
-                            <div>
-                                <h4 class="fw-bold mb-2">{{$bannerRight->title}}</h4>
-                                <p class="mb-0">{{$bannerRight->description}}</p>
+                    <a href="{{$bannerRight->link}}" class="d-block h-100">
+                        <div class="banner-half rounded-4 overflow-hidden position-relative text-white shadow-lg h-100">
+                            <img src="{{asset('banner/'.$bannerRight->photo)}}" alt="{{$bannerRight->photo_alt}}" class="w-100 h-100 object-fit-cover">
+
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center p-4"
+                                 style="background: rgba(0,0,0,0.5);">
+                                <div>
+                                    <h4 class="fw-bold mb-2">{{$bannerRight->title}}</h4>
+                                    <p class="mb-0">{{$bannerRight->description}}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
+                <!-- بنر چپ -->
                 <div class="col-lg-6">
-                    <div class="banner-half rounded-4 overflow-hidden position-relative text-white shadow-lg h-100">
-                       <a href="{{$bannerLeft->link}}">
-                           <img src="{{asset('banner/'.$bannerLeft->photo)}}" alt="{{$bannerLeft->photo_alt}}" class="w-100 h-100 object-fit-cover">
-                       </a>
-                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center p-4"
-                             style="background: rgba(0,0,0,0.5);">
-                            <div>
-                                <h4 class="fw-bold mb-2">{{$bannerLeft->title}}ا</h4>
-                                <p class="mb-0">{{$bannerLeft->description}}</p>
+                    <a href="{{$bannerLeft->link}}" class="d-block h-100">
+                        <div class="banner-half rounded-4 overflow-hidden position-relative text-white shadow-lg h-100">
+                            <img src="{{asset('banner/'.$bannerLeft->photo)}}" alt="{{$bannerLeft->photo_alt}}" class="w-100 h-100 object-fit-cover">
+
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center p-4"
+                                 style="background: rgba(0,0,0,0.5);">
+                                <div>
+                                    <h4 class="fw-bold mb-2">{{$bannerLeft->title}}</h4>
+                                    <p class="mb-0">{{$bannerLeft->description}}</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -158,12 +168,14 @@
                     @foreach($categories as $category)
                         <div class="flex-shrink-0" style="width: 280px;">
                             <div class="product-card h-100 position-relative shadow-sm">
-                                <a href="#">
+                                <a href="{{route('front.category.show', $category->slug)}}">
                                     <img src="{{asset('category/'.$category->photo)}}" class="w-100" alt="{{$category->photo_alt}}">
                                 </a>
 
                                 <div class="p-4" style="text-align: center;">
-                                    <h5 class="mb-2">{{$category->name}}</h5>
+                                   <a href="{{route('front.category.show', $category->slug)}}" style="text-decoration: none;color: black;">
+                                       <h5 class="mb-2">{{$category->name}}</h5>
+                                   </a>
 
                                 </div>
                             </div>
@@ -210,7 +222,7 @@
                                {{-- <p class="text-muted small lh-lg">
                                     با رعایت این نکات ساده، حتی در سخت‌ترین شرایط زمستانی هم ایمن و گرم بمانید...
                                 </p>--}}
-                                <a href="#" class="btn btn-outline-dark btn-sm rounded-pill px-4">ادامه مطلب →</a>
+                                <a href="{{route('front.article.show',$blog->slug)}}" class="btn btn-outline-dark btn-sm rounded-pill px-4">ادامه مطلب →</a>
                             </div>
                         </div>
                     </div>
@@ -220,4 +232,5 @@
             </div>
         </div>
     </section>
+
 @endsection

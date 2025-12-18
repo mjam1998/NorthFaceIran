@@ -3,6 +3,7 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Title با پیش‌فرض -->
     <title>@yield('page_title', 'Northface Iran - تجهیزات حرفه‌ای کوهنوردی و طبیعت‌گردی نورث فیس')</title>
@@ -32,6 +33,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{asset('front/assets/app.css')}}">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 
 </head>
@@ -42,21 +45,31 @@
     <div class="container">
         <!-- لوگو -->
         <a class="navbar-brand" href="#">
-            <img src="{{asset('front/assets/default.svg')}}" style="height: 60px; width: 60px;" alt="لوگو">
+            <img src="{{asset('front/assets/default.svg')}}" style="height: 60px; width: 60px;" alt="northFace iran">
         </a>
 
         <!-- دکمه همبرگری + آیکون‌های موبایل (همیشه در موبایل نمایش داده میشه) -->
         <div class="d-flex align-items-center gap-3 d-lg-none">
             <!-- جستجوی موبایل -->
             <div class="position-relative">
-                <input type="text" placeholder="جستجو..." class="search-input-clean mobile-search" autocomplete="off">
-                <i class="bi bi-search position-absolute end-0 top-50 translate-middle-y" style="font-size: 18px; color: #ccc;"></i>
+                <form method="get" action="{{ route('front.search') }}">
+                    <input type="text" placeholder="جستجو..." name="search" class="search-input-clean mobile-search" autocomplete="off">
+                    <i class="bi bi-search search-icon-submit position-absolute end-0 top-50 translate-middle-y" style="font-size: 18px; color: #ccc;"></i>
+                </form>
+
             </div>
 
             <!-- سبد خرید موبایل -->
-            <a href="#" class="text-white position-relative">
+            <a href="{{--{{ route('cart.show') }}--}}" class="text-white position-relative">
                 <i class="bi bi-bag" style="font-size: 24px;"></i>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                @php
+                    $cartTotal = array_sum(array_column(session('cart', []), 'quantity'));
+                @endphp
+                @if($cartTotal > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ $cartTotal }}
+        </span>
+                @endif
             </a>
 
             <!-- دکمه منو موبایل -->
@@ -68,32 +81,48 @@
         <!-- منوی اصلی + جستجو و سبد در دسکتاپ -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#">صفحه اصلی</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('home.index')}}">صفحه اصلی</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">محصولات</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">کاپشن و ژاکت</a></li>
-                        <li><a class="dropdown-item" href="#">کفش کوهنوردی</a></li>
-                        <li><a class="dropdown-item" href="#">کوله‌پشتی</a></li>
-                        <li><a class="dropdown-item" href="#">چادر و تجهیزات کمپینگ</a></li>
-                        <li><a class="dropdown-item" href="#">لباس ورزشی</a></li>
+                        @foreach($menuCategories as $category)
+                            <li><a class="dropdown-item" href="{{route('front.category.show', $category->slug)}}">{{$category->name}}</a></li>
+                        @endforeach
+
+
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="#">درباره ما</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">تماس با ما</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">بلاگ</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('front.articles.show')}}">بلاگ</a></li>
             </ul>
 
             <!-- فقط در دسکتاپ: جستجو + سبد خرید -->
             <div class="d-none d-lg-flex align-items-center gap-4">
                 <div class="position-relative">
-                    <input type="text" placeholder="جستجو در فروشگاه..." class="search-input-clean" autocomplete="off">
-                    <i class="bi bi-search position-absolute end-0 top-50 translate-middle-y" style="font-size: 20px; color: #ccc; pointer-events: none;"></i>
+                    <form method="get" action="{{ route('front.search') }}">
+                        <input type="text" name="search" placeholder="جستجو در فروشگاه..." class="search-input-clean" autocomplete="off">
+                        <button type="submit"
+                                class="bg-transparent border-0 position-absolute end-0 top-50 translate-middle-y"
+                                style="z-index: 3;">
+                            <i class="bi bi-search" style="font-size: 18px; color: #ccc;"></i>
+                        </button>
+
+                    </form>
+
                 </div>
 
-                <a href="#" class="text-white position-relative">
-                    <i class="bi bi-bag" style="font-size: 25px;"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                <!-- پیش‌نمایش سبد خرید در دسکتاپ -->
+                <a href="{{--{{ route('cart.show') }}--}}" class="text-white position-relative">
+                    <i class="bi bi-bag" style="font-size: 24px;"></i>
+                    @php
+                        $cartTotal = array_sum(array_column(session('cart', []), 'quantity'));
+                    @endphp
+                    @if($cartTotal > 0)
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ $cartTotal }}
+        </span>
+                    @endif
                 </a>
             </div>
         </div>
@@ -167,7 +196,58 @@
             document.querySelector('.navbar').classList.add('scrolled');
         }
     });
+    document.querySelectorAll('.search-icon-submit').forEach(icon => {
+        icon.addEventListener('click', function () {
+            this.closest('form').submit();
+        });
+    });
 </script>
+
+{{--<script>
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+
+            // چون در صفحه اصلی رنگ و سایز انتخاب نمی‌شه، فقط یک عدد با اولین variant موجود اضافه می‌کنیم
+            // یا می‌تونی modal باز کنی برای انتخاب رنگ/سایز — فعلاً ساده فرض می‌کنیم اولین ترکیب موجود
+
+            fetch("/cart/add-quick", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    quantity: 1
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message); // یا toast بهتر
+
+                        // آپدیت بج و dropdown
+                        document.querySelectorAll('.cart-badge').forEach(badge => {
+                            if (data.total_items > 0) {
+                                badge.textContent = data.total_items;
+                                badge.style.display = 'inline';
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        });
+
+                        fetch("{{ route('cart.dropdown') }}")
+                            .then(res => res.text())
+                            .then(html => {
+                                document.getElementById('cart-dropdown-content').innerHTML = html;
+                            });
+                    }
+                });
+        });
+    });
+</script>--}}
 </body>
 </html>
 
