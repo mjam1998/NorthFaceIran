@@ -97,6 +97,12 @@
             </a>
         </li>
         <li class="menu-item">
+            <a href="{{route('admin.orders.index')}}"  >
+                <i class="bi bi-cart3"></i>
+                <span>    سفارشات</span>
+            </a>
+        </li>
+        <li class="menu-item">
             <a href="{{route('admin.blog.index')}}"  >
                 <i class="bi bi-file-earmark-font"></i>
                 <span>    مقالات</span>
@@ -106,6 +112,12 @@
             <a href="{{route('admin.banner.index')}}"  >
                 <i class="bi bi-card-image"></i>
                 <span>    ویدیو و بنر صفحه اصلی</span>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="{{route('admin.send.list')}}"  >
+                <i class="bi bi-box-seam"></i>
+                <span>     روش ارسال محصولات</span>
             </a>
         </li>
 
@@ -167,17 +179,27 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#persianDate').persianDatepicker({
-            format: 'YYYY/MM/DD', // فقط سال/ماه/روز
-            timePicker: {
-                enabled: false // غیرفعال کردن انتخاب زمان
-            },
+            format: 'YYYY/MM/DD',
+            autoClose: true,
+            observer: true,
+
+            position: 'auto',
             toolbox: {
-                calendarSwitch: {
-                    enabled: false // غیرفعال کردن سوئیچ تقویم
+                calendarSwitch: { enabled: false }
+            },
+            altField: '#hiddenDate', // اختیاری
+            navigator: {
+                enabled: true
+            },
+            // مهم‌ترین بخش:
+            initialValue: false,
+            calendar: {
+                persian: {
+                    leapYearMode: 'astronomical'
                 }
             },
-            observer: true,
-            altField: '#dateInput'
+            // موقعیت تقویم
+            placement: 'bottom' // یا 'top' یا 'auto'
         });
     });
 </script>

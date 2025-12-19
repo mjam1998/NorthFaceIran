@@ -306,15 +306,7 @@
                         messageEl.innerHTML = `<div class="alert alert-success">${cartData.message}</div>`;
 
                         // آپدیت تعداد در نوار بالا
-                        const cartBadges = document.querySelectorAll('.badge.bg-danger');
-                        cartBadges.forEach(badge => {
-                            if (cartData.total_items > 0) {
-                                badge.textContent = cartData.total_items;
-                                badge.style.display = 'inline';
-                            } else {
-                                badge.style.display = 'none';
-                            }
-                        });
+                        updateCartBadge(cartData.total_items);
                     }
                 })
                 .catch(err => {

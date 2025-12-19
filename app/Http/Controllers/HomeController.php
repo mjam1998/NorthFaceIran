@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Blog;
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\PhotoBanner;
 use App\Models\Product;
 use App\Models\ProductComment;
@@ -309,6 +310,125 @@ class HomeController extends Controller
         $products = $query->with('photos')->paginate(12);
 
         return view('front.search', compact( 'products'));
+    }
+    public function cartList()
+    {
+        $cart = session()->get('cart', []);
+        $totalPrice = 0;
+        $totalItems = 0;
+        if (empty($cart)){
+            return view('front.cart', compact('cart', 'totalPrice', 'totalItems'));
+        }
+        foreach ($cart as $item) {
+            $totalPrice += $item['price'] * $item['quantity'];
+            $totalItems += $item['quantity'];
+        }
+
+        return view('front.cart', compact('cart', 'totalPrice', 'totalItems'));
+    }
+
+
+    public function cartUpdate(Request $request)
+    {
+        $request->validate([
+            'key'      => 'required|string',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $key = $request->key;
+        $newQuantity = $request->quantity;
+
+        $cart = session()->get('cart', []);
+
+        if (!isset($cart[$key])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'آیتم مورد نظر در سبد خرید یافت نشد.'
+            ]);
+        }
+
+        // استخراج product_id, color_id, size_id از کلید
+        [$productId, $colorId, $sizeId] = explode('-', $key);
+
+        $variant = ProductVariant::where('product_id', $productId)
+            ->where('color_id', $colorId)
+            ->where('size_id', $sizeId)
+            ->first();
+
+        if (!$variant || $variant->count < $newQuantity) {
+            $available = $variant ? $variant->count : 0;
+            return response()->json([
+                'success' => false,
+                'message' => "موجودی کافی نیست. حداکثر {$available} عدد موجود است."
+            ]);
+        }
+
+        // بروزرسانی تعداد
+        $cart[$key]['quantity'] = $newQuantity;
+        session()->put('cart', $cart);
+
+        // محاسبه مجدد جمع کل و تعداد آیتم‌ها
+        $totalPrice = 0;
+        $totalItems = 0;
+        foreach ($cart as $item) {
+            $totalPrice += $item['price'] * $item['quantity'];
+            $totalItems += $item['quantity'];
+        }
+
+        return response()->json([
+            'success'     => true,
+            'message'     => 'سبد خرید با موفقیت بروزرسانی شد.',
+            'totalPrice'  => $totalPrice,           // بدون format (برای جاوااسکریپت)
+            'totalItems'  => $totalItems,
+            'itemPrice'   => $cart[$key]['price'] * $newQuantity
+        ]);
+    }
+
+
+    public function cartRemove(Request $request, $key)
+    {
+        $cart = session()->get('cart', []);
+
+        if (!isset($cart[$key])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'آیتم مورد نظر یافت نشد.'
+            ]);
+        }
+
+        // حذف آیتم
+        unset($cart[$key]);
+        session()->put('cart', $cart);
+
+        // محاسبه مجدد تعداد کل آیتم‌ها
+        $totalItems = array_sum(array_column($cart, 'quantity'));
+
+        return response()->json([
+            'success'    => true,
+            'message'    => 'محصول از سبد خرید حذف شد.',
+            'totalItems' => $totalItems
+        ]);
+    }
+    public function showForm()
+    {
+        return view('front.order.track');
+    }
+
+    // جستجو و نمایش جزئیات سفارش
+    public function track(Request $request)
+    {
+        $request->validate([
+            'track_number' => 'required|string|exists:orders,track_number',
+        ], [
+            'track_number.required' => 'لطفاً کد پیگیری را وارد کنید.',
+            'track_number.exists'   => 'کد پیگیری وارد شده یافت نشد.',
+        ]);
+
+        $order = Order::with(['items.product', 'items.product_color', 'items.product_size', 'send_method'])
+            ->where('track_number', $request->track_number)
+            ->firstOrFail();
+
+        return view('front.order.result', compact('order'));
     }
 
 }

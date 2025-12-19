@@ -60,16 +60,12 @@
             </div>
 
             <!-- سبد خرید موبایل -->
-            <a href="{{--{{ route('cart.show') }}--}}" class="text-white position-relative">
+            <a href="{{route('front.cart.list')}}" class="text-white position-relative">
                 <i class="bi bi-bag" style="font-size: 24px;"></i>
-                @php
-                    $cartTotal = array_sum(array_column(session('cart', []), 'quantity'));
-                @endphp
-                @if($cartTotal > 0)
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ $cartTotal }}
-        </span>
-                @endif
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge-count">
+    0
+</span>
+
             </a>
 
             <!-- دکمه منو موبایل -->
@@ -92,7 +88,7 @@
 
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#">درباره ما</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('order.track.form')}}">پیگیری سفارش</a></li>
                 <li class="nav-item"><a class="nav-link" href="#">تماس با ما</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('front.articles.show')}}">بلاگ</a></li>
             </ul>
@@ -113,16 +109,12 @@
                 </div>
 
                 <!-- پیش‌نمایش سبد خرید در دسکتاپ -->
-                <a href="{{--{{ route('cart.show') }}--}}" class="text-white position-relative">
+                <a href="{{route('front.cart.list')}}" class="text-white position-relative">
                     <i class="bi bi-bag" style="font-size: 24px;"></i>
-                    @php
-                        $cartTotal = array_sum(array_column(session('cart', []), 'quantity'));
-                    @endphp
-                    @if($cartTotal > 0)
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ $cartTotal }}
-        </span>
-                    @endif
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-badge-count">
+    0
+</span>
+
                 </a>
             </div>
         </div>
@@ -202,52 +194,27 @@
         });
     });
 </script>
+<script>
+    function updateCartBadge(totalItems) {
+        const badges = document.querySelectorAll('.badge.bg-danger'); // یا '.cart-badge-count' اگر class خاص دادی
 
-{{--<script>
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const productId = this.dataset.productId;
-
-            // چون در صفحه اصلی رنگ و سایز انتخاب نمی‌شه، فقط یک عدد با اولین variant موجود اضافه می‌کنیم
-            // یا می‌تونی modal باز کنی برای انتخاب رنگ/سایز — فعلاً ساده فرض می‌کنیم اولین ترکیب موجود
-
-            fetch("/cart/add-quick", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    quantity: 1
-                })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message); // یا toast بهتر
-
-                        // آپدیت بج و dropdown
-                        document.querySelectorAll('.cart-badge').forEach(badge => {
-                            if (data.total_items > 0) {
-                                badge.textContent = data.total_items;
-                                badge.style.display = 'inline';
-                            } else {
-                                badge.style.display = 'none';
-                            }
-                        });
-
-                        fetch("{{ route('cart.dropdown') }}")
-                            .then(res => res.text())
-                            .then(html => {
-                                document.getElementById('cart-dropdown-content').innerHTML = html;
-                            });
-                    }
-                });
+        badges.forEach(badge => {
+            if (totalItems > 0) {
+                badge.textContent = totalItems;
+                badge.style.display = 'inline'; // یا 'block' بسته به موقعیت
+            } else {
+                badge.style.display = 'none';
+            }
         });
+    }
+
+    // وقتی صفحه لود شد، بج رو با تعداد اولیه پر کن
+    document.addEventListener('DOMContentLoaded', function () {
+        const initialCount = {{ array_sum(array_column(session('cart', []), 'quantity')) }};
+        updateCartBadge(initialCount);
     });
-</script>--}}
+</script>
+
 </body>
 </html>
 

@@ -4,8 +4,11 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SendController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',[HomeController::class,'index'])->name('home.index');
@@ -22,6 +25,15 @@ Route::get('/cart/dropdown', [HomeController::class, 'cartDropdown'])->name('car
 Route::get('/blogs', [HomeController::class, 'showArticles'])->name('front.articles.show');
 Route::get('/blog/{slug}', [HomeController::class, 'showBlog'])->name('front.article.show');
 Route::get('/search', [HomeController::class, 'search'])->name('front.search');
+Route::get('/cart/list', [HomeController::class, 'cartList'])->name('front.cart.list');
+Route::post('/cart/update', [HomeController::class, 'cartUpdate'])->name('front.cart.update');
+Route::post('/cart/remove/{key}', [HomeController::class, 'cartRemove'])->name('front.cart.remove');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout/pay/submit', [CheckoutController::class, 'paySubmit'])->name('checkout.pay.submit');
+Route::get('/checkout/pay/callback', [CheckoutController::class, 'payCallback'])->name('checkout.pay.callback');
+Route::get('/payment/result/{track}', [CheckoutController::class, 'paymentResult'])->name('checkout.payment.result');
+Route::get('/order/track', [HomeController::class, 'showForm'])->name('order.track.form');
+Route::post('/order/track', [HomeController::class, 'track'])->name('order.track.result');
 
 Route::prefix('/admin')->middleware('auth')->group(function(){
 Route::get('/index',[AdminController::class,'index'])->name('admin.index');
@@ -69,6 +81,13 @@ Route::get('/index',[AdminController::class,'index'])->name('admin.index');
     Route::get('/banner', [BannerController::class, 'index'])->name('admin.banner.index');
     Route::post('/banner/video', [BannerController::class, 'updateVideo'])->name('admin.banner.video.update');
     Route::post('/banner/photo/{photoBanner}', [BannerController::class, 'updatePhoto'])->name('admin.banner.photo.update');
+
+    Route::get('/send/list',[SendController::class,'index'])->name('admin.send.list');
+    Route::post('/send/store',[SendController::class,'store'])->name('admin.send.store');
+    Route::put('/send/edit/{id}', [SendController::class, 'edit'])->name('admin.send.edit');
+
+    Route::get('/orders/list', [OrderController::class, 'index'])->name('admin.orders.index');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.order.update-status');
 
     Route::post('logout',[AdminController::class,'logout'])->name('logout');
 });

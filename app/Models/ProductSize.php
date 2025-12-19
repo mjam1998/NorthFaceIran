@@ -19,4 +19,7 @@ class ProductSize extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+    public function order_items(){
+        return $this->hasMany(OrderItem::class);
+    }
 }
