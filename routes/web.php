@@ -34,6 +34,9 @@ Route::get('/checkout/pay/callback', [CheckoutController::class, 'payCallback'])
 Route::get('/payment/result/{track}', [CheckoutController::class, 'paymentResult'])->name('checkout.payment.result');
 Route::get('/order/track', [HomeController::class, 'showForm'])->name('order.track.form');
 Route::post('/order/track', [HomeController::class, 'track'])->name('order.track.result');
+Route::get('/about-us', [HomeController::class, 'aboutUs'])->name('front.about.us');
+Route::get('/contact-us', [HomeController::class, 'contactUs'])->name('front.contact.us');
+Route::get('/rules', [HomeController::class, 'rules'])->name('front.rules');
 
 Route::prefix('/admin')->middleware('auth')->group(function(){
 Route::get('/index',[AdminController::class,'index'])->name('admin.index');

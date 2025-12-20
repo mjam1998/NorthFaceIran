@@ -3,17 +3,17 @@
 
 
 @section('content')
-    <!-- Hero Section با عکس دسته‌بندی -->
-    <section class="hero position-relative overflow-hidden" style="height: 60vh; min-height: 400px;">
-        <img src="{{ asset('blog/blog.jpg' ) }}"
-             alt="NorthFace Iran"
-             class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover" style="z-index: -1;">
 
-        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center text-white"
-             style="background: rgba(0,0,0,0.5);">
-            <div class="container">
-                <h1 class="display-4 fw-bold">جست جو در فروشگاه</h1>
+    <section class="py-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ asset('front/assets/images/about-hero.jpg') }}') no-repeat center center/cover; color: white;">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-center text-lg-end">
+                    <h1 class="display-4 fw-bold mb-4">جستجو در فروشگاه</h1>
 
+                </div>
+                <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                    <img src="{{asset('front/assets/The-North-Face-Logo.png')}}" alt="لوگو نورث فیس" class="img-fluid" style="max-height: 200px;">
+                </div>
             </div>
         </div>
     </section>

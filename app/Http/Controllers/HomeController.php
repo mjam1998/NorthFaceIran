@@ -431,4 +431,19 @@ class HomeController extends Controller
         return view('front.order.result', compact('order'));
     }
 
+    public function aboutUs()
+    {
+        return view('front.aboutus');
+    }
+
+    public function contactUs()
+    {
+        return view('front.contactus');
+    }
+
+    public function rules()
+    {
+        return view('front.rules');
+    }
+
 }

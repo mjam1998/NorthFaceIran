@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{asset('front/assets/default.svg')}}">
+    <link rel="icon" type="image/png" href="{{asset('front/assets/default.svg')}}">
+
+    <!-- برای دستگاه‌های اپل -->
+    <link rel="apple-touch-icon" href="{{asset('front/assets/default.svg')}}">
     <!-- Title با پیش‌فرض -->
     <title>@yield('page_title', 'Northface Iran - تجهیزات حرفه‌ای کوهنوردی و طبیعت‌گردی نورث فیس')</title>
 
@@ -53,7 +59,7 @@
             <!-- جستجوی موبایل -->
             <div class="position-relative">
                 <form method="get" action="{{ route('front.search') }}">
-                    <input type="text" placeholder="جستجو..." name="search" class="search-input-clean mobile-search" autocomplete="off">
+                    <input type="text" placeholder="جستجو..." name="search" class="search-input-clean mobile-search" style="width: 150px;" autocomplete="off">
                     <i class="bi bi-search search-icon-submit position-absolute end-0 top-50 translate-middle-y" style="font-size: 18px; color: #ccc;"></i>
                 </form>
 
@@ -89,7 +95,8 @@
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="{{route('order.track.form')}}">پیگیری سفارش</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">تماس با ما</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('front.contact.us')}}">تماس با ما</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{route('front.about.us')}}">درباره ما</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{route('front.articles.show')}}">بلاگ</a></li>
             </ul>
 
@@ -132,29 +139,28 @@
         <div class="row">
             <div class="col-lg-4 mb-4">
                 <a  href="#">
-                    <img src="{{asset('front/assets/default.svg')}}" style="height: 80px; width: 80px;" alt="لوگو">
+                    <img src="{{asset('front/assets/default.svg')}}" style="height: 80px; width: 80px;" alt="The NorthFace Iran ">
                 </a>
-                <p style="color: black;">تجهیزات حرفه‌ای کوهنوردی و طبیعت‌گردی  نورث فیس با ضمانت اصالت و کیفیت</p>
+                <p style="color: black;">تجهیزات حرفه‌ای کوهنوردی و طبیعت‌گردی  NorthFace با ضمانت اصالت و کیفیت</p>
             </div>
             <div class="col-lg-2 col-md-6 mb-4">
                 <h5 class=" mb-4" style="color: black;">لینک‌های سریع</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#">درباره ما</a></li>
-                    <li><a href="#">تماس با ما</a></li>
-                    <li><a href="#">قوانین سایت</a></li>
-                    <li><a href="#">حریم خصوصی</a></li>
+                    <li><a href="{{route('front.rules')}}">قوانین سایت</a></li>
+                    <li><a href="{{route('order.track.form')}}"> پیگیری سفارش</a></li>
+                    <li><a href="{{route('front.about.us')}}">درباره ما</a></li>
+                    <li><a href="{{route('front.contact.us')}}">تماس با ما</a></li>
+
+
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-6 mb-4">
                 <h5  class=" mb-4" style="color: black;">ارتباط با ما</h5>
-                <p style="color: black;">تلفن: ۰۲۱-۸۸۷۷۶۶۵۵</p>
-                <p style="color: black;">ایمیل: info@diaco.shop</p>
-                <div class="mt-3">
-                    <a href="#" class=" me-3"><i class="fab fa-instagram fa-lg"></i></a>
-                    <a href="#" ><i class="fab fa-telegram fa-lg"></i></a>
-                    <a href="#" ><i class="fab fa-whatsapp fa-lg"></i></a>
-                </div>
+                <p style="color: black;"><i class="bi bi-geo-alt"></i> آدرس:تهران میدان انقلاب ابتدای خیابان جمالزاده جنوبی مجتمع آفتاب طبقه دهم واحد 1011</p>
+                <p style="color: black;"><i class="bi bi-telephone"></i> تلفن: 09123579250</p>
+
+
             </div>
             <div class="col-lg-2 col-md-6 mb-4">
                 <h5  class=" mb-4" style="color: black;">مجوزها و اینماد</h5>
@@ -163,7 +169,7 @@
         </div>
         <hr class="bg-secondary" style="border-top: 1px solid black; width: 100%;" >
         <div class="text-center py-3">
-            <p style="color: black;">&copy; ۱۴۰۴ Northface Iran - تمامی حقوق محفوظ است.</p>
+            <p style="color: black;">&copy; 1404-1405 NorthFace Iran - تمامی حقوق محفوظ است.</p>
         </div>
     </div>
 </footer>

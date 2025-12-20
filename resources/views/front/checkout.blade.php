@@ -69,7 +69,7 @@
                                     @endforeach
                                 </select>
                             </div>
-
+                             <p> ثبت سفارش و خرید به معنای پذیرش <a href="{{route('front.rules')}}">قوانین سایت</a> میباشد.  </p>
                             <button type="submit" class="btn btn-success btn-lg w-100">
                                 ثبت سفارش و پرداخت
                             </button>
